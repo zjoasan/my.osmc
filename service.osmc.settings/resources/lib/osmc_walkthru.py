@@ -392,7 +392,19 @@ class walkthru_gui(xbmcgui.WindowXMLDialog):
 		try:
 
 			log('changing hostname to %s' % self.device_name.replace('current name: ', ''))
-			xbmc.sethostname(self.device_name.replace('current name: ', '')) 
+			xbmc.sethostname(self.device_name.replace('current name: ', ''))
+			#edit kodi-CEC.xml
+			if 1<= len(self.device_name.replace('current name: ', '')) <=15:
+				filename = "/home/osmc/.kodi/userdata/peripheral_data/cec_CEC_Adapter.xml"
+				parsed_xml = ET.parse(filename)
+				root = parsed_xml.getroot()
+				for child in root.findall("*"):
+    					if child.get('id') == "device_name":
+				        	child.set('value', self.device_name.replace('current name: ', ''))
+				ET.write(filname) 
+			else:
+				log('CEC-Devicename change failed')
+			#Hope this isn't needed and that karnage wont kill me for the fugly code
 
 		except:
 
